@@ -1,10 +1,13 @@
-h1 Users
+extends ../layout
 
-p
-  a(href="/users/new") Create new profile
+block content
+  h1 Users
 
-ul
-  - for(var username in users) {
-    li
-      a(href="/users/" + encodeURIComponent(username))= users[username].name
-  - }
+  p
+    a(href="/users/new") Create new profile
+
+  ul
+    - for(var username in users) {
+      li
+        a(href="/users/" + encodeURIComponent(username))= users[username].name
+    - }
