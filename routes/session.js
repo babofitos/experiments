@@ -10,9 +10,9 @@ module.exports = function(app) {
     res.render('session/new', {title: "Log in"});
   });
   
-  app.post('/session', notLoggedIn, function(req, res) {
+  app.post('/session', notLoggedIn, function(req, res, err) {
     usersCollection.verify(req.body.username, req.body.password, function(err, item) {
-      if (err) res.send(500, 'Something went wrong')
+      if (err) next(err)
       else {
         if (item) {
           req.session.user = item

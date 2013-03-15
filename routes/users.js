@@ -9,9 +9,9 @@ var usersCollection = require('../db/index')
   , restrictUserToSelf = require('./middleware/restrict_user_to_self')
 
 module.exports = function(app) {
-  app.get('/users', function(req, res){
+  app.get('/users', function(req, res, next){
     usersCollection.findAll(function(err, users) {
-      if (err) res.send('Something went wrong', 500)
+      if (err) next(err)
       else res.render('users/index', {title: 'Users', users: users})
     })
   })
@@ -24,15 +24,15 @@ module.exports = function(app) {
     res.render('users/profile', {title: 'User profile', user: req.user})
   })
 
-  app.post('/users', notLoggedIn, function(req, res) {
+  app.post('/users', notLoggedIn, function(req, res, next) {
     usersCollection.findByName(req.body.username, function(err, name) {
-      if (err) res.send('Something went wrong', 500)
+      if (err) next(err)
       else {
         if (name !== null) {
           res.send('Conflict', 409)
         } else {
           usersCollection.insert(req.body, function(err, result) {
-            if (err) res.send('Something went wrong', 500)
+            if (err) next(err)
             else {
               res.redirect('/users')
             }
@@ -44,7 +44,7 @@ module.exports = function(app) {
   
   app.del('/users/:name', loadUser, restrictUserToSelf, function(req, res, next) {
     usersCollection.delete(req.user.username, function(err, result) {
-      if (err) res.send('Something went wrong', 500)
+      if (err) next(err)
       else res.redirect('/users')
     })
   })
