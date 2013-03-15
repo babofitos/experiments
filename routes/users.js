@@ -28,7 +28,7 @@ module.exports = function(app) {
     usersCollection.findByName(req.body.username, function(err, name) {
       if (err) res.send('Something went wrong', 500)
       else {
-        if (name) {
+        if (name !== null) {
           res.send('Conflict', 409)
         } else {
           usersCollection.insert(req.body, function(err, result) {
@@ -39,18 +39,13 @@ module.exports = function(app) {
           })
         }
       }
-
     })
-    // if (users[req.body.username]) {
-    //   res.send('Conflict', 409)
-    // } else {
-    //   users[req.body.username] = req.body
-    //   res.redirect('/users')
-    // }
   })
   
   app.del('/users/:name', loadUser, restrictUserToSelf, function(req, res, next) {
-    delete users[req.user.username]
-    res.redirect('/users')
+    usersCollection.delete(req.user.username, function(err, result) {
+      if (err) res.send('Something went wrong', 500)
+      else res.redirect('/users')
+    })
   })
 }

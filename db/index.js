@@ -41,7 +41,31 @@ exports.insert = function(doc, cb) {
       collection.insert(doc, {w:1}, function(err, result) {
         //result is an array of records inserted
         if (err) cb(err)
-        else cb(null)
+        else cb(null, result)
+      })
+    }
+  })
+}
+
+exports.delete = function(username, cb) {
+  db.collection('users', function(err, collection) {
+    if (err) cb(err)
+    else {
+      collection.remove({username: username}, {w:1}, function(err, result) {
+        if (err) cb(err)
+        else cb(null, result)
+      })
+    }
+  })
+}
+
+exports.verify = function(username, pass, cb) {
+  db.collection('users', function(err, collection) {
+    if (err) cb(err)
+    else {
+      collection.findOne({username: username, password: pass}, function(err, item) {
+        if (err) cb(err)
+        else cb(null, item)
       })
     }
   })

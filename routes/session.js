@@ -1,7 +1,8 @@
 /*
 * Session Routes
 */
-var users = require('../data/users')
+// var users = require('../data/users')
+var usersCollection = require('../db/index')
   , notLoggedIn = require('./middleware/not_logged_in')
 
 module.exports = function(app) {
@@ -10,17 +11,21 @@ module.exports = function(app) {
   });
   
   app.post('/session', notLoggedIn, function(req, res) {
-    if (users[req.body.username] &&
-      users[req.body.username].password === req.body.password) {
-        req.session.user = users[req.body.username];
-        res.redirect('/users');
-    } else {
-      res.redirect('/session/new')
-    }
-  });
+    usersCollection.verify(req.body.username, req.body.password, function(err, item) {
+      if (err) res.send(500, 'Something went wrong')
+      else {
+        if (item) {
+          req.session.user = item
+          res.redirect('/users')
+        } else {
+          res.redirect('/session/new')
+        }
+      }
+    })
+  })
 
   app.del('/session', function(req, res, next) {
-    req.session.destroy();
-    res.redirect('/users');
-  });
-};
+    req.session.destroy()
+    res.redirect('/users')
+  })
+}
