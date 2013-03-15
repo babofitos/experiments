@@ -7,7 +7,6 @@ block content
     a(href="/users/new") Create new profile
 
   ul
-    - for(var username in users) {
+    each user in users
       li
-        a(href="/users/" + encodeURIComponent(username))= users[username].name
-    - }
+        a(href="/users/" + encodeURIComponent(user.username))= user.name

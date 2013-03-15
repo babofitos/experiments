@@ -2,14 +2,18 @@
 /*
  * GET users listing.
  */
-var users = require('../data/users.json')
+// var users = require('../data/users.json')
+var usersCollection = require('../db/index')
   , notLoggedIn = require('./middleware/not_logged_in')
   , loadUser = require('./middleware/load_user')
   , restrictUserToSelf = require('./middleware/restrict_user_to_self')
 
 module.exports = function(app) {
   app.get('/users', function(req, res){
-    res.render('users/index', {title: 'Users', users: users})
+    usersCollection.findAll(function(err, users) {
+      if (err) console.log(err)
+      res.render('users/index', {title: 'Users', users: users})
+    })
   })
 
   app.get('/users/new', notLoggedIn, function(req, res) {
