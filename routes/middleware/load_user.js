@@ -2,13 +2,17 @@
 var collection = require('../../db/index')
 
 function loadUser (req, res, next) {
-  var user = req.user = users[req.params.name]
+  var user = req.params.name
 
-    if (!user) {
+  collection.findByName(user, function(err, name) {
+    if (err) next(err)
+    else if (!name) {
       res.send('Not Found', 404)
     } else {
+      req.user = name
       next()
     }
+  })
 }
 
 module.exports = loadUser

@@ -21,3 +21,15 @@ exports.findAll = function(cb) {
     }
   })
 }
+
+exports.findByName = function(name, cb) {
+  db.collection('users', function(err, collection) {
+    if (err) cb(err)
+    else {
+      collection.findOne({username: name}, function(err, item) {
+        if (err) cb(err)
+        else cb(null, item)
+      })
+    }
+  })
+}
