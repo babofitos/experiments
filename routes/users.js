@@ -11,8 +11,8 @@ var usersCollection = require('../db/index')
 module.exports = function(app) {
   app.get('/users', function(req, res){
     usersCollection.findAll(function(err, users) {
-      if (err) console.log(err)
-      res.render('users/index', {title: 'Users', users: users})
+      if (err) res.send('Something went wrong', 500)
+      else res.render('users/index', {title: 'Users', users: users})
     })
   })
 
@@ -25,12 +25,28 @@ module.exports = function(app) {
   })
 
   app.post('/users', notLoggedIn, function(req, res) {
-    if (users[req.body.username]) {
-      res.send('Conflict', 409)
-    } else {
-      users[req.body.username] = req.body
-      res.redirect('/users')
-    }
+    usersCollection.findByName(req.body.username, function(err, name) {
+      if (err) res.send('Something went wrong', 500)
+      else {
+        if (name) {
+          res.send('Conflict', 409)
+        } else {
+          usersCollection.insert(req.body, function(err, result) {
+            if (err) res.send('Something went wrong', 500)
+            else {
+              res.redirect('/users')
+            }
+          })
+        }
+      }
+
+    })
+    // if (users[req.body.username]) {
+    //   res.send('Conflict', 409)
+    // } else {
+    //   users[req.body.username] = req.body
+    //   res.redirect('/users')
+    // }
   })
   
   app.del('/users/:name', loadUser, restrictUserToSelf, function(req, res, next) {

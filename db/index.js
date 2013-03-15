@@ -33,3 +33,16 @@ exports.findByName = function(name, cb) {
     }
   })
 }
+
+exports.insert = function(doc, cb) {
+  db.collection('users', function(err, collection) {
+    if (err) cb(err)
+    else {
+      collection.insert(doc, {w:1}, function(err, result) {
+        //result is an array of records inserted
+        if (err) cb(err)
+        else cb(null)
+      })
+    }
+  })
+}
