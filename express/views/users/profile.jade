@@ -1,0 +1,11 @@
+extends ../layout
+
+block content
+  h1= user.name
+
+  h2 Bio
+  p= user.bio
+
+  form(method="post", action="/users/" + encodeURIComponent(user.username))
+    input(name="_method", type="hidden", value="DELETE")
+    input(type="submit", value="Delete")
