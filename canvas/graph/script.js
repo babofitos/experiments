@@ -1,12 +1,14 @@
 var canvas = document.getElementsByTagName('canvas')[0]
   , context = canvas.getContext('2d')
 
-context.lineWidth = .5
-context.strokeStyle = 'lightgray'
-
 drawGrid(context, 10, 10)
 
 function drawGrid (context, stepx, stepy) {
+  context.save()
+
+  context.lineWidth = .5
+  context.strokeStyle = 'lightgray'
+
   for (var i=stepx+.5;i<canvas.width;i+=stepx) {
     context.beginPath()
     context.moveTo(i, 0)
@@ -22,4 +24,5 @@ function drawGrid (context, stepx, stepy) {
     context.stroke()
     context.closePath()
   }
+  context.restore()
 }
