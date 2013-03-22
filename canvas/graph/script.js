@@ -36,6 +36,10 @@ function guideLines (canvas, x, y) {
   var cbound = canvas.getBoundingClientRect()
     , hud = coords
 
-  hud.innerHTML = (x-cbound.left).toString() + ', ' + (y-cbound.top).toString()
-  // console.log(x - cbound.left, y - cbound.top)
+  //boundingClientRect gets the canvas (not context) values
+  //multiply to get scaled coords
+    , scaledX = x-cbound.left*(canvas.width/cbound.width)
+    , scaledY = y-cbound.top*(canvas.height/cbound.height)
+    
+  hud.innerHTML = scaledX.toFixed(0) + ', ' + scaledY.toFixed(0)
 }
