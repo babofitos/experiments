@@ -1,5 +1,6 @@
 var canvas = document.getElementsByTagName('canvas')[0]
   , context = canvas.getContext('2d')
+  , coords = document.getElementById('display-coords')
 
 drawGrid(context, 10, 10)
 
@@ -25,4 +26,16 @@ function drawGrid (context, stepx, stepy) {
     context.closePath()
   }
   context.restore()
+}
+
+canvas.addEventListener('mousemove', function(e) {
+  guideLines(canvas, e.clientX, e.clientY)
+})
+
+function guideLines (canvas, x, y) {
+  var cbound = canvas.getBoundingClientRect()
+    , hud = coords
+
+  hud.innerHTML = (x-cbound.left).toString() + ', ' + (y-cbound.top).toString()
+  // console.log(x - cbound.left, y - cbound.top)
 }
