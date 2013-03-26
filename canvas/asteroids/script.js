@@ -32,10 +32,11 @@ $(document).ready(function() {
     playAnimation = false
   })
 
-  function Asteroid(x, y, radius, vX, vY, aX, aY) {
+  function Asteroid(x, y, radius, mass, vX, vY, aX, aY) {
     this.x = x
     this.y = y
     this.radius = radius
+    this.mass = mass
     this.vX = vX
     this.vY = vY
     this.aX = aX
@@ -48,12 +49,16 @@ $(document).ready(function() {
     var x = 20+(Math.random()*(canvasWidth-40))
       , y = 20+(Math.random()*(canvasHeight-40))
       , radius = 5+Math.random()*10
+      , mass = radius/2
       , vX = Math.random()*4-2
       , vY = Math.random()*4-2
-      , aX = Math.random()*0.2-0.1
-      , aY = Math.random()*0.2-0.1
+      // , aX = Math.random()*0.2-0.1
+      // , aY = Math.random()*0.2-0.1
+      , aX = 0
+      , aY = 0
 
-    asteroids.push(new Asteroid(x, y, radius, vX, vY, aX, aY))
+
+    asteroids.push(new Asteroid(x, y, radius, mass, vX, vY, aX, aY))
   }
 
   function reverse(asteroid) {
@@ -110,6 +115,41 @@ $(document).ready(function() {
     for (var i = 0; i < asteroidsLength; i++) {
       var tmpAsteroid = asteroids[i]
 
+      for (var j = i+1; j < asteroidsLength; j++) {
+        var tmpAsteroidB = asteroids[j]
+          , dX = tmpAsteroidB.x - tmpAsteroid.x
+          , dY = tmpAsteroidB.y - tmpAsteroid.y
+          , distance = Math.sqrt((dX*dX)+(dY*dY))
+
+          if (distance < tmpAsteroid.radius + tmpAsteroidB.radius) {
+            var angle = Math.atan2(dY, dX)
+            var sine = Math.sin(angle)
+            var cosine = Math.cos(angle)
+            var x = 0
+            var y = 0
+            var xB = dX * cosine + dY * sine
+            var yB = dY * cosine - dX * sine
+            var vX = tmpAsteroid.vX * cosine + tmpAsteroid.vY * sine
+            var vY = tmpAsteroid.vY * cosine - tmpAsteroid.vX * sine
+            var vXb = tmpAsteroidB.vX * cosine + tmpAsteroidB.vY * sine
+            var vYb = tmpAsteroidB.vY * cosine - tmpAsteroidB.vX * sine
+            // vX *= -1
+            // vXb *= -1
+            var vTotal = vX - vXb
+            vX = ((tmpAsteroid.mass - tmpAsteroidB.mass) * vX + 2 * tmpAsteroidB.mass * vXb) / (tmpAsteroid.mass + tmpAsteroidB.mass)
+            vXb = vTotal + vX
+            xB = x + (tmpAsteroid.radius + tmpAsteroidB.radius)
+            tmpAsteroid.x = tmpAsteroid.x + (x * cosine - y * sine)
+            tmpAsteroid.y = tmpAsteroid.y + (y * cosine + x * sine)
+            tmpAsteroidB.x = tmpAsteroid.x + (xB * cosine - yB * sine)
+            tmpAsteroidB.y = tmpAsteroid.y + (yB * cosine + xB * sine)
+            tmpAsteroid.vX = vX * cosine - vY * sine
+            tmpAsteroid.vY = vY * cosine + vX * sine
+            tmpAsteroidB.vX = vXb * cosine - vYb * sine
+            tmpAsteroidB.vY = vYb * cosine + vXb * sine
+          }
+      }
+
       tmpAsteroid.x += tmpAsteroid.vX
       tmpAsteroid.y += tmpAsteroid.vY
 
@@ -117,7 +157,7 @@ $(document).ready(function() {
       limitSpeed(tmpAsteroid)
 
       //friction
-      friction(tmpAsteroid)
+      // friction(tmpAsteroid)
 
       //reverse direction on boundary
       reverse(tmpAsteroid)
