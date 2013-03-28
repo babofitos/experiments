@@ -198,6 +198,10 @@ $(document).ready(function() {
       context.beginPath();
       context.moveTo(player.x, player.y);
       context.lineTo(powerX, powerY);
+      var dist = Math.sqrt(Math.pow(powerX-player.x, 2)+Math.pow(powerY-player.y, 2))
+      if (dist > 98) {
+        context.strokeStyle = "rgb(255, 0, 0)"
+      }
       context.closePath();
       context.stroke();
     };
