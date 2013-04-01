@@ -141,11 +141,12 @@ function drawGuidewires(x, y) {
 // Canvas event handlers..............................................
 
 canvas.onmousedown = function (e) {
+   //mousedown only fires once
    var loc = windowToCanvas(e.clientX, e.clientY);
    
    e.preventDefault(); // prevent cursor change
 
-   //begin by saving the state the ctx was in before doing anything
+   //begin by saving the state the ctx was in before the mouse was pressed down
    saveDrawingSurface();
    mousedown.x = loc.x;
    mousedown.y = loc.y;
@@ -165,6 +166,8 @@ canvas.onmousemove = function (e) {
       restoreDrawingSurface();
       //each time event fires it strokes a new line from global mousedown obj
       //coords to mouse coords in canvas
+      //mousedown coords were set when mouse was pressed. doesn't change
+      //until new line is created
       updateRubberband(loc);
 
       if(guidewires) {
