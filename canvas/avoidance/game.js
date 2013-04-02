@@ -108,7 +108,7 @@ $(document).ready(function() {
       };
     });
     // Start the animation loop
-    animate();
+    requestNextAnimationFrame(animate);
   };
   // Inititialize the game environment
   function init() {
@@ -270,8 +270,7 @@ $(document).ready(function() {
     };
 
     if (playGame) {
-      // Run the animation loop again in 33 milliseconds
-      setTimeout(animate, 33);
+      requestNextAnimationFrame(animate);
     };
   };
   init();
